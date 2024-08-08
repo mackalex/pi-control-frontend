@@ -10,7 +10,8 @@ export function MousePad() {
                 paddingTop: 30,
             }}
         >
-            <View style={{backgroundColor: '#2e3440', flex: 0.3, borderRadius: '20px'}} >
+            <View style={{ backgroundColor: '#2e3440', flex: 0.3, borderRadius: '20px' }} >
+            </View>
         </View>
     )
 }
