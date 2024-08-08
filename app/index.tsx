@@ -1,10 +1,10 @@
-import { Image, StyleSheet, Platform, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { MousePad } from '@/components/Mousepad';
 
-export default function HomeScreen() {
+export default function Index() {
   return (
     <View>
       <ThemedView style={styles.titleContainer}>
@@ -38,11 +38,4 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  }
 });
