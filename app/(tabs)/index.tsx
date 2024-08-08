@@ -10,8 +10,8 @@ export default function HomeScreen() {
       <ThemedView style={styles.titleContainer}>
         <Image 
             source={require('@/assets/images/brands/raspberry-pi.svg')}
+            resizeMode='contain'
             style={{
-              resizeMode: "contain",
               height: 100,
               width: 100,
               marginTop: 20
