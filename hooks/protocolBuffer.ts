@@ -1,23 +1,23 @@
-const enum PICTRL_COMMANDS {
-    PI_CTRL_HEARTBEAT,
-    PI_CTRL_MOUSE_MV,
-    PI_CTRL_MOUSE_CLICK,
-    PI_CTRL_TEXT,
-    PI_CTRL_KEYSYM
+const enum PICTRL_COMMAND {
+    HEARTBEAT,
+    MOUSE_MV,
+    MOUSE_CLICK,
+    TEXT,
+    KEYSYM
 }
 
-export const enum PICTRL_MOUSE_BUTTONS {
-    PI_CTRL_MOUSE_LEFT,
-    PI_CTRL_MOUSE_RIGHT,
+export const enum PICTRL_MOUSE_BUTTON {
+    LEFT,
+    RIGHT,
 }
 
 export const enum PICTRL_MOUSE_CLICK {
-    PI_CTRL_MOUSE_UP,
-    PI_CTRL_MOUSE_DOWN,
+    UP,
+    DOWN,
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button#value
-export const enum BROWSER_MOUSE_BUTTONS {
+export const enum BROWSER_MOUSE_BUTTON {
     MAIN,
     AUX, // Usually wheel or middle
     SEC, // Usually right click
@@ -26,11 +26,11 @@ export const enum BROWSER_MOUSE_BUTTONS {
 }
 
 export function getTextEventCommand(charCode: number) {
-    return new Uint8Array([PICTRL_COMMANDS.PI_CTRL_TEXT, 1, charCode])
+    return new Uint8Array([PICTRL_COMMAND.TEXT, 1, charCode])
 }
 
-export function getMouseClickEventCommand(btn: PICTRL_MOUSE_BUTTONS, click: PICTRL_MOUSE_CLICK) {
+export function getMouseClickEventCommand(btn: PICTRL_MOUSE_BUTTON, click: PICTRL_MOUSE_CLICK) {
     let byte: number = btn << 1;
     byte |= click;
-    return new Uint8Array([PICTRL_COMMANDS.PI_CTRL_MOUSE_CLICK, 1, byte])
+    return new Uint8Array([PICTRL_COMMAND.MOUSE_CLICK, 1, byte])
 }
