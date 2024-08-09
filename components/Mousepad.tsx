@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/Colors";
 import { Text, View } from "react-native";
 
 export function MousePad() {
@@ -5,12 +6,12 @@ export function MousePad() {
         <View
             style={{
                 flexDirection: 'column',
-                height: 2200,
+                flex: 1,
                 padding: 10,
                 paddingTop: 30,
             }}
         >
-            <View style={{ backgroundColor: '#2e3440', flex: 0.3, borderRadius: '20px' }} >
+            <View style={{ backgroundColor: Colors.dark.background, flex: 1, borderRadius: '20px' }} >
             </View>
         </View>
     )

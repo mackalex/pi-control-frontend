@@ -3,10 +3,17 @@ import { Image, StyleSheet, View } from 'react-native';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { MousePad } from '@/components/Mousepad';
+import { TextBox } from '@/components/Textbox';
+import { Colors } from '@/constants/Colors';
 
 export default function Index() {
   return (
-    <View>
+    <View 
+      style={{
+        height: '100%',
+        backgroundColor: Colors.light.background
+      }}
+    >
       <ThemedView style={styles.titleContainer}>
         <Image 
             source={require('@/assets/images/brands/raspberry-pi.svg')}
@@ -21,8 +28,11 @@ export default function Index() {
           PiControl
         </ThemedText>
       </ThemedView>
-      <ThemedView>
+      <ThemedView style={styles.mousePadContainer}>
         <MousePad />
+      </ThemedView>
+      <ThemedView style={styles.textBoxContainer}>
+        <TextBox />
       </ThemedView>
     </View>
   );
@@ -38,4 +48,10 @@ const styles = StyleSheet.create({
     gap: 8,
     marginBottom: 8,
   },
+  mousePadContainer: {
+    flex: 1.0
+  },
+  textBoxContainer: {
+    padding: 30
+  }
 });
