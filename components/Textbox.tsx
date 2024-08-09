@@ -1,5 +1,6 @@
 import { View } from "react-native";
 import { ThemedText } from "./ThemedText";
+import { getTextEventCommand } from "@/hooks/protocolBuffer";
 
 export function TextBox() {
     return (
@@ -16,12 +17,8 @@ export function TextBox() {
                     }
                 }
                 onKeyDown={e => {
-                    console.log("event type: " + e.type)
-                    console.log("char code: " + e.key.charCodeAt(0))
-                }}
-                onKeyUp={e => {
-                    console.log("event type: " + e.type)
-                    console.log("char code: " + e.key.charCodeAt(0))
+                    const protocolPacket = getTextEventCommand(e.key.charCodeAt(0));
+                    console.log(protocolPacket);
                 }}
             />
         </View>
