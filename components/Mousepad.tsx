@@ -21,7 +21,7 @@ export function MousePad() {
             style={{ backgroundColor: Colors.dark.background, flex: 1, borderRadius: '20px' }}
             onMouseDown={(e: MouseEvent) => {
                 let button = e.button as BROWSER_MOUSE_BUTTON;
-                if (!(browser_to_pictrl_clicks.has(button))) {
+                if (!browser_to_pictrl_clicks.has(button)) {
                     return;
                 }
                 const protocolPacket = getMouseClickEventCommand(browser_to_pictrl_clicks.get(button)!, PICTRL_MOUSE_CLICK.DOWN);
@@ -29,7 +29,7 @@ export function MousePad() {
             }}
             onMouseUp={(e: MouseEvent) => {
                 let button = e.button as BROWSER_MOUSE_BUTTON;
-                if (!(browser_to_pictrl_clicks.has(button))) {
+                if (!browser_to_pictrl_clicks.has(button)) {
                     return;
                 }
                 const protocolPacket = getMouseClickEventCommand(browser_to_pictrl_clicks.get(button)!, PICTRL_MOUSE_CLICK.UP);
