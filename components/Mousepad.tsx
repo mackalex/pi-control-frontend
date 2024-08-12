@@ -11,10 +11,23 @@ const browser_to_pictrl_clicks = new Map<BROWSER_MOUSE_BUTTON, PICTRL_MOUSE_BUTT
     [BROWSER_MOUSE_BUTTON.SEC, PICTRL_MOUSE_BUTTON.RIGHT],
 ]);
 
+type RawMouseCoord = {
+    x: number,
+    y: number,
+}
+
+type PreviousPointerEvent = {
+    id: number,
+    lastPos: RawMouseCoord
+}
+
 export function MousePad() {
-    let prev: RelMouseMove = {
-        x: 0,
-        y: 0
+    let prev: PreviousPointerEvent = {
+        id: -1,
+        lastPos: {
+            x: -1,
+            y: -1
+        }
     };
 
     let delta: RelMouseMove = {
@@ -35,8 +48,9 @@ export function MousePad() {
                     e.preventDefault();
                 }}
                 onPointerDown={(e: PointerEvent) => {
-                    prev.x = e.screenX;
-                    prev.y = e.screenY;
+                    prev.id = e.pointerId;
+                    prev.lastPos.x = e.screenX;
+                    prev.lastPos.y = e.screenY;
                     let button = e.button as BROWSER_MOUSE_BUTTON;
                     if (!browser_to_pictrl_clicks.has(button)) {
                         return;
@@ -45,6 +59,10 @@ export function MousePad() {
                     console.log(protocolPacket);
                 }}
                 onPointerUp={(e: PointerEvent) => {
+                    if (e.pointerId != prev.id) {
+                        return;
+                    }
+
                     let button = e.button as BROWSER_MOUSE_BUTTON;
                     if (!browser_to_pictrl_clicks.has(button)) {
                         return;
@@ -53,13 +71,16 @@ export function MousePad() {
                     console.log(protocolPacket);
                 }}
                 onPointerMove={(e: PointerEvent) => {
-                    delta.x = e.screenX - prev.x;
-                    delta.y = e.screenY - prev.y;
+                    if (e.pointerId != prev.id) {
+                        return;
+                    }
+                    delta.x = e.screenX - prev.lastPos.x;
+                    delta.y = e.screenY - prev.lastPos.y;
                     const protocolPacket = getMouseMoveEventCommand(delta);
                     console.log(protocolPacket);
 
-                    prev.x = e.screenX;
-                    prev.y = e.screenY;
+                    prev.lastPos.x = e.screenX;
+                    prev.lastPos.y = e.screenY;
                 }}
                 style={{
                     backgroundColor: Colors.dark.background,
