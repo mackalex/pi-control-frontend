@@ -27,7 +27,6 @@ export function MousePad() {
             }}
         >
             <View
-                style={{ backgroundColor: Colors.dark.background, flex: 1, borderRadius: '20px' }}
                 onContextMenu={(e: PointerEvent) => {
                     e.preventDefault();
                 }}
@@ -52,6 +51,13 @@ export function MousePad() {
                     delta.y = e.movementY;
                     const protocolPacket = getMouseMoveEventCommand(delta);
                     console.log(protocolPacket);
+                }}
+                style={{
+                    backgroundColor: Colors.dark.background,
+                    flex: 1,
+                    borderRadius: '20px',
+                    overscrollBehavior: 'none',
+                    touchAction: 'none',
                 }}
             >
             </View>
