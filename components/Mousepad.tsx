@@ -28,6 +28,9 @@ export function MousePad() {
         >
             <View
                 style={{ backgroundColor: Colors.dark.background, flex: 1, borderRadius: '20px' }}
+                onContextMenu={(e: PointerEvent) => {
+                    e.preventDefault();
+                }}
                 onMouseDown={(e: MouseEvent) => {
                     let button = e.button as BROWSER_MOUSE_BUTTON;
                     if (!browser_to_pictrl_clicks.has(button)) {
