@@ -31,7 +31,7 @@ export function MousePad() {
                 onContextMenu={(e: PointerEvent) => {
                     e.preventDefault();
                 }}
-                onMouseDown={(e: MouseEvent) => {
+                onPointerDown={(e: PointerEvent) => {
                     let button = e.button as BROWSER_MOUSE_BUTTON;
                     if (!browser_to_pictrl_clicks.has(button)) {
                         return;
@@ -39,7 +39,7 @@ export function MousePad() {
                     const protocolPacket = getMouseClickEventCommand(browser_to_pictrl_clicks.get(button)!, PICTRL_MOUSE_CLICK.DOWN);
                     console.log(protocolPacket);
                 }}
-                onMouseUp={(e: MouseEvent) => {
+                onPointerUp={(e: PointerEvent) => {
                     let button = e.button as BROWSER_MOUSE_BUTTON;
                     if (!browser_to_pictrl_clicks.has(button)) {
                         return;
@@ -47,7 +47,7 @@ export function MousePad() {
                     const protocolPacket = getMouseClickEventCommand(browser_to_pictrl_clicks.get(button)!, PICTRL_MOUSE_CLICK.UP);
                     console.log(protocolPacket);
                 }}
-                onMouseMove={(e: MouseEvent) => {
+                onPointerMove={(e: PointerEvent) => {
                     delta.x = e.movementX;
                     delta.y = e.movementY;
                     const protocolPacket = getMouseMoveEventCommand(delta);
