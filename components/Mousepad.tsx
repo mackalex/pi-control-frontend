@@ -69,6 +69,8 @@ export function MousePad() {
                     }
                     const protocolPacket = getMouseClickEventCommand(browser_to_pictrl_clicks.get(button)!, PICTRL_MOUSE_CLICK.UP);
                     console.log(protocolPacket);
+
+                    prev.id = -1;
                 }}
                 onPointerMove={(e: PointerEvent) => {
                     if (e.pointerId != prev.id) {
