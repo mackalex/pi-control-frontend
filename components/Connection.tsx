@@ -3,6 +3,8 @@ import { ThemedText } from "./ThemedText";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import net from 'node:net';
+
 
 const DEFAULT_PORT = 14741;
 
@@ -16,21 +18,22 @@ function portIsValid(port: string): boolean {
     return true;
 }
 
-function connect(ip: string, port: string): void {
+function connect(ip: string, port: string): net.Socket | null {
     if (!ipIsValid(ip)) {
         console.error("Invalid IP!");
-        return;
+        return null;
     }
     if (!portIsValid(port)) {
         console.error("Invalid port!");
-        return;
+        return null;
     }
-    console.log(`TODO: Connect to ${ip}:${port}`)
+    return net.createConnection(parseInt(port), ip);
 }
 
 export function Connection() {
     let [ip, setIp] = useState("");
     let [port, setPort] = useState(DEFAULT_PORT.toString());
+    let [conn, setConn] = useState<net.Socket | null>(null);
     return (
         <View
             style={{
@@ -61,7 +64,7 @@ export function Connection() {
                 />
             </View>
             <Pressable
-                onPress={() => connect(ip, port)}
+                onPress={() => setConn(connect(ip, port))}
                 style={{
                     backgroundColor: '#33b249',
                     borderRadius: 7,
