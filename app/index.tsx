@@ -5,6 +5,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { MousePad } from '@/components/Mousepad';
 import { TextBox } from '@/components/Textbox';
 import { Colors } from '@/constants/Colors';
+import { Connection } from '@/components/Connection';
 
 export default function Index() {
   return (
@@ -28,6 +29,9 @@ export default function Index() {
           PiControl
         </ThemedText>
       </ThemedView>
+      <ThemedView style={styles.connectionContainer}>
+        <Connection />
+      </ThemedView>
       <ThemedView style={styles.mousePadContainer}>
         <MousePad />
       </ThemedView>
@@ -44,14 +48,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
   mousePadContainer: {
     flex: 1.0
   },
   textBoxContainer: {
     padding: 30
-  }
+  },
+  connectionContainer: {
+    padding: 10,
+  },
 });
