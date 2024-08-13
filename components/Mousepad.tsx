@@ -87,9 +87,7 @@ export function MousePad() {
                 style={{
                     backgroundColor: Colors.dark.background,
                     flex: 1,
-                    borderRadius: '20px',
-                    overscrollBehavior: 'none',
-                    touchAction: 'none',
+                    borderRadius: 20,
                 }}
             >
             </View>

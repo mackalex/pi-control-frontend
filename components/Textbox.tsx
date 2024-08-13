@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { TextInput, View } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { getTextEventCommand } from "@/hooks/protocolBuffer";
 
@@ -8,22 +8,22 @@ export function TextBox() {
             <ThemedText type="subtitle">
                 Ask, and your Pi shall receive:
             </ThemedText>
-            <textarea 
-                rows={1}
-                cols={40} 
+            <TextInput
+                editable
+                numberOfLines={1}
                 style={
                     {
                         marginTop: 20,
-                        resize: 'none'
+                        borderColor: 'black',
+                        borderWidth: 2
                     }
                 }
                 placeholder="Send text to your Raspberry Pi!"
                 onChange={e => {
-                    e.target.value = '';
+                    e.nativeEvent.text = '';
                 }}
-                onKeyDown={e => {
-                    const protocolPacket = getTextEventCommand(e.key.charCodeAt(0));
-                    console.log(protocolPacket);
+                onKeyPress={e => {
+                    const protocolPacket = getTextEventCommand(e.nativeEvent.key.charCodeAt(0));
                 }}
             />
         </View>
