@@ -1,8 +1,9 @@
 import { View } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { getTextEventCommand } from "@/hooks/protocolBuffer";
+import { PiConnectionProps } from "./Connection";
 
-export function TextBox() {
+export function TextBox({conn}: PiConnectionProps) {
     return (
         <View>
             <ThemedText type="subtitle">
@@ -23,7 +24,7 @@ export function TextBox() {
                 }}
                 onKeyDown={e => {
                     const protocolPacket = getTextEventCommand(e.key.charCodeAt(0));
-                    console.log(protocolPacket);
+                    conn.send(protocolPacket);
                 }}
             />
         </View>

@@ -5,6 +5,7 @@ import {
     getMouseClickEventCommand, getMouseMoveEventCommand,
     BROWSER_MOUSE_BUTTON, PICTRL_MOUSE_BUTTON, PICTRL_MOUSE_CLICK
 } from "@/hooks/protocolBuffer";
+import { PiConnectionProps } from "./Connection";
 
 const browser_to_pictrl_clicks = new Map<BROWSER_MOUSE_BUTTON, PICTRL_MOUSE_BUTTON>([
     [BROWSER_MOUSE_BUTTON.MAIN, PICTRL_MOUSE_BUTTON.LEFT],
@@ -21,7 +22,7 @@ type PreviousPointerEvent = {
     lastPos: RawMouseCoord
 }
 
-export function MousePad() {
+export function MousePad({conn}: PiConnectionProps) {
     let prev: PreviousPointerEvent = {
         id: -1,
         lastPos: {
@@ -56,7 +57,7 @@ export function MousePad() {
                         return;
                     }
                     const protocolPacket = getMouseClickEventCommand(browser_to_pictrl_clicks.get(button)!, PICTRL_MOUSE_CLICK.DOWN);
-                    console.log(protocolPacket);
+                    conn.send(protocolPacket);
                 }}
                 onPointerUp={(e: PointerEvent) => {
                     if (e.pointerId != prev.id) {
@@ -68,7 +69,7 @@ export function MousePad() {
                         return;
                     }
                     const protocolPacket = getMouseClickEventCommand(browser_to_pictrl_clicks.get(button)!, PICTRL_MOUSE_CLICK.UP);
-                    console.log(protocolPacket);
+                    conn.send(protocolPacket);
 
                     prev.id = -1;
                 }}
@@ -79,7 +80,7 @@ export function MousePad() {
                     delta.x = e.screenX - prev.lastPos.x;
                     delta.y = e.screenY - prev.lastPos.y;
                     const protocolPacket = getMouseMoveEventCommand(delta);
-                    console.log(protocolPacket);
+                    conn.send(protocolPacket);
 
                     prev.lastPos.x = e.screenX;
                     prev.lastPos.y = e.screenY;
