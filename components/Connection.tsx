@@ -45,6 +45,7 @@ export function Connection() {
     let setCallbacks = (ws: WebSocket) => {
         ws.onopen = (event: Event) => {
             setConn(ws);
+            setErr("");
         };
 
         ws.onerror = (error) => {
