@@ -151,7 +151,7 @@ export function Connection({conn, setConn}: ConnectionComponentProps) {
                     style={[{ flex: 3 }, styles.inputBox]}
                     placeholder="IP"
                     keyboardType="url"
-                    editable={!conn}
+                    readOnly={!!conn}
                     value={ip}
                     onChangeText={(text) => setIp(text)}
                 />
@@ -159,7 +159,7 @@ export function Connection({conn, setConn}: ConnectionComponentProps) {
                     style={[{ flex: 1 }, styles.inputBox]}
                     value={port}
                     keyboardType="number-pad"
-                    editable={!conn}
+                    readOnly={!!conn}
                     placeholder="Port"
                     onChangeText={(text) => setPort(text)}
                 />
