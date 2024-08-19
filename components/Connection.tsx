@@ -39,7 +39,10 @@ function getWSUrl(ip: string, port: string): string {
     return `ws://${ip}:${port}`;
 }
 
-function getErrorComponent(error: string) {
+type ErrorProps = {
+    error: string
+};
+function ErrorComponent({error}: ErrorProps) {
     if (!error) { return null; }
     return (
         <ThemedText style={{ color: "red" }}>
@@ -135,7 +138,7 @@ export function Connection({conn, setConn}: ConnectionComponentProps) {
                 Connect to your Pi:
             </ThemedText>
             <View>
-                {getErrorComponent(err)}
+            <ErrorComponent error={err}/>
             </View>
             <View
                 style={{
