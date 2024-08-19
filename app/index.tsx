@@ -16,12 +16,12 @@ function Controls({conn}: WebSocketConnProps) {
       <ThemedView
         style={styles.mousePadContainer}
         key="mousepad">
-        <MousePad />
+        <MousePad conn={conn}/>
       </ThemedView>,
       <ThemedView
         style={styles.textBoxContainer}
         key="textbox">
-        <TextBox />
+        <TextBox conn={conn}/>
       </ThemedView>
     ]
   )
