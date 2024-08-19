@@ -26,7 +26,10 @@ type RawMouseCoord = {
 type PreviousPointerEvent = {
   id: number;
   lastPos: RawMouseCoord;
+  lastMouseDown: number // Unix millis
 };
+
+const MOUSE_DELAY_FOR_CLICK = 200; // ms
 
 export function MousePad({ conn }: PiConnectionProps) {
   let prev: PreviousPointerEvent = {
@@ -35,6 +38,7 @@ export function MousePad({ conn }: PiConnectionProps) {
       x: -1,
       y: -1,
     },
+    lastMouseDown: 0
   };
 
   let delta: RelMouseMove = {
@@ -62,11 +66,7 @@ export function MousePad({ conn }: PiConnectionProps) {
           if (!browser_to_pictrl_clicks.has(button)) {
             return;
           }
-          const protocolPacket = getMouseClickEventCommand(
-            browser_to_pictrl_clicks.get(button)!,
-            PICTRL_MOUSE_CLICK.DOWN,
-          );
-          conn.send(protocolPacket);
+          prev.lastMouseDown = Date.now();
         }}
         onPointerUp={(e: PointerEvent) => {
           if (e.pointerId !== prev.id) {
@@ -77,11 +77,19 @@ export function MousePad({ conn }: PiConnectionProps) {
           if (!browser_to_pictrl_clicks.has(button)) {
             return;
           }
-          const protocolPacket = getMouseClickEventCommand(
-            browser_to_pictrl_clicks.get(button)!,
-            PICTRL_MOUSE_CLICK.UP,
-          );
-          conn.send(protocolPacket);
+
+          if (Date.now() - prev.lastMouseDown < MOUSE_DELAY_FOR_CLICK) {
+            const mouseDownPacket = getMouseClickEventCommand(
+              browser_to_pictrl_clicks.get(button)!,
+              PICTRL_MOUSE_CLICK.DOWN,
+            );
+            const mouseUpPacket = getMouseClickEventCommand(
+              browser_to_pictrl_clicks.get(button)!,
+              PICTRL_MOUSE_CLICK.UP,
+            );
+            conn.send(mouseDownPacket);
+            conn.send(mouseUpPacket);
+          }
 
           prev.id = -1;
         }}
