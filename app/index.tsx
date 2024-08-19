@@ -5,9 +5,13 @@ import { ThemedView } from '@/components/ThemedView';
 import { MousePad } from '@/components/Mousepad';
 import { TextBox } from '@/components/Textbox';
 import { Colors } from '@/constants/Colors';
-import { Connection } from '@/components/Connection';
+import { Connection, WebSocketConnProps } from '@/components/Connection';
+import React, { useState } from "react";
+
 
 export default function Index() {
+  let [conn, setConn] = useState<WebSocket | null>(null);
+
   return (
     <View 
       style={{
@@ -30,7 +34,7 @@ export default function Index() {
         </ThemedText>
       </ThemedView>
       <ThemedView style={styles.connectionContainer}>
-        <Connection />
+        <Connection conn={conn} setConn={setConn}/>
       </ThemedView>
       <ThemedView style={styles.mousePadContainer}>
         <MousePad />
