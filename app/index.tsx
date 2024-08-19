@@ -9,6 +9,24 @@ import { Connection, WebSocketConnProps } from '@/components/Connection';
 import React, { useState } from "react";
 
 
+function Controls({conn}: WebSocketConnProps) {
+  if (conn == null) { return null; }
+  return (
+    [
+      <ThemedView
+        style={styles.mousePadContainer}
+        key="mousepad">
+        <MousePad />
+      </ThemedView>,
+      <ThemedView
+        style={styles.textBoxContainer}
+        key="textbox">
+        <TextBox />
+      </ThemedView>
+    ]
+  )
+}
+
 export default function Index() {
   let [conn, setConn] = useState<WebSocket | null>(null);
 
@@ -36,12 +54,7 @@ export default function Index() {
       <ThemedView style={styles.connectionContainer}>
         <Connection conn={conn} setConn={setConn}/>
       </ThemedView>
-      <ThemedView style={styles.mousePadContainer}>
-        <MousePad />
-      </ThemedView>
-      <ThemedView style={styles.textBoxContainer}>
-        <TextBox />
-      </ThemedView>
+      <Controls conn={conn} />
     </View>
   );
 }
