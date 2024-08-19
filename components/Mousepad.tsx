@@ -60,7 +60,7 @@ export function MousePad({conn}: PiConnectionProps) {
                     conn.send(protocolPacket);
                 }}
                 onPointerUp={(e: PointerEvent) => {
-                    if (e.pointerId != prev.id) {
+                    if (e.pointerId !== prev.id) {
                         return;
                     }
 
@@ -74,7 +74,7 @@ export function MousePad({conn}: PiConnectionProps) {
                     prev.id = -1;
                 }}
                 onPointerMove={(e: PointerEvent) => {
-                    if (e.pointerId != prev.id) {
+                    if (e.pointerId !== prev.id) {
                         return;
                     }
                     delta.x = e.screenX - prev.lastPos.x;
