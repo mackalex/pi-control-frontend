@@ -3,6 +3,17 @@ import { ThemedText } from "./ThemedText";
 import { getTextEventCommand } from "@/hooks/protocolBuffer";
 import { PiConnectionProps } from "./Connection";
 
+
+function getCodeForEvent(e: React.KeyboardEvent): number {
+  switch (e.key) {
+    case "Enter":
+      return 10; // ASCII LF
+    case "Backspace":
+      return 127; // ASCII DEL
+  };
+  return e.key.charCodeAt(0);
+}
+
 export function TextBox({ conn }: PiConnectionProps) {
   return (
     <View>
@@ -19,7 +30,7 @@ export function TextBox({ conn }: PiConnectionProps) {
           e.target.value = "";
         }}
         onKeyDown={(e) => {
-          const protocolPacket = getTextEventCommand(e.key.charCodeAt(0));
+          const protocolPacket = getTextEventCommand(getCodeForEvent(e));
           conn.send(protocolPacket);
         }}
       />
