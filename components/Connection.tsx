@@ -7,6 +7,15 @@ import { TextInput } from "react-native-gesture-handler";
 
 const DEFAULT_PORT = 14741;
 
+type OptionalWS = WebSocket | null;
+export type WebSocketConnProps = {
+  conn: OptionalWS
+};
+
+type ConnectionComponentProps = WebSocketConnProps & {
+  setConn: React.Dispatch<React.SetStateAction<OptionalWS>>
+};
+
 // https://developer.mozilla.org/en-US/docs/Web/API/CloseEvent/code
 enum CloseCodes {
     NORMAL = 1000
@@ -35,11 +44,10 @@ function getErrorComponent(error: string) {
     );
 }
 
-export function Connection() {
+export function Connection({conn, setConn}: ConnectionComponentProps) {
     let [ip, setIp] = useState("");
     let [port, setPort] = useState(DEFAULT_PORT.toString());
 
-    let [conn, setConn] = useState<WebSocket | null>(null);
     let [err, setErr] = useState("");
 
     let setCallbacks = (ws: WebSocket) => {
@@ -63,7 +71,7 @@ export function Connection() {
         };
     };
 
-    let connect = (ip: string, port: string): WebSocket | null => {
+    let connect = (ip: string, port: string): OptionalWS => {
         if (!ipIsValid(ip)) {
             setErr("Invalid IP!");
             return null;
