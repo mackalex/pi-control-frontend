@@ -26,6 +26,9 @@ export function TextBox({ conn }: PiConnectionProps) {
           <TextInput
             style={{
               marginTop: 20,
+              borderColor: "black",
+              borderWidth: 2,
+              flexGrow: 1
             }}
             value={text}
             placeholder="Send text to your Raspberry Pi!"
