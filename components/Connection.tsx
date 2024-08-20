@@ -89,7 +89,7 @@ export function Connection({ conn, setConn }: ConnectionComponentProps) {
       return null;
     }
 
-    const ws = new WebSocket(getWSUrl(ip, port));
+    const ws = new WebSocket(getWSUrl(ip, port), ["picontrol"]);
     setCallbacks(ws);
     return ws;
   };
