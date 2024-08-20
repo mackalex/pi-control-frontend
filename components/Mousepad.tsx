@@ -108,7 +108,7 @@ export function MousePad({ conn }: PiConnectionProps) {
         style={{
           backgroundColor: Colors.dark.background,
           flex: 1,
-          borderRadius: "20px",
+          borderRadius: 20,
           overscrollBehavior: "none",
           touchAction: "none",
         }}
