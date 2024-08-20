@@ -9,6 +9,7 @@ import {
   PICTRL_MOUSE_CLICK,
 } from "@/hooks/protocolBuffer";
 import { PiConnectionProps } from "./Connection";
+import { PointerEvent } from "react-native";
 
 const browser_to_pictrl_clicks = new Map<
   BROWSER_MOUSE_BUTTON,
@@ -55,25 +56,22 @@ export function MousePad({ conn }: PiConnectionProps) {
       }}
     >
       <View
-        onContextMenu={(e: PointerEvent) => {
-          e.preventDefault();
-        }}
         onPointerDown={(e: PointerEvent) => {
-          prev.id = e.pointerId;
-          prev.lastPos.x = e.screenX;
-          prev.lastPos.y = e.screenY;
-          let button = e.button as BROWSER_MOUSE_BUTTON;
+          prev.id = e.nativeEvent.pointerId;
+          prev.lastPos.x = e.nativeEvent.screenX;
+          prev.lastPos.y = e.nativeEvent.screenY;
+          let button = e.nativeEvent.button as BROWSER_MOUSE_BUTTON;
           if (!browser_to_pictrl_clicks.has(button)) {
             return;
           }
           prev.lastMouseDown = Date.now();
         }}
         onPointerUp={(e: PointerEvent) => {
-          if (e.pointerId !== prev.id) {
+          if (e.nativeEvent.pointerId !== prev.id) {
             return;
           }
 
-          let button = e.button as BROWSER_MOUSE_BUTTON;
+          let button = e.nativeEvent.button as BROWSER_MOUSE_BUTTON;
           if (!browser_to_pictrl_clicks.has(button)) {
             return;
           }
@@ -94,23 +92,21 @@ export function MousePad({ conn }: PiConnectionProps) {
           prev.id = -1;
         }}
         onPointerMove={(e: PointerEvent) => {
-          if (e.pointerId !== prev.id) {
+          if (e.nativeEvent.pointerId !== prev.id) {
             return;
           }
-          delta.x = e.screenX - prev.lastPos.x;
-          delta.y = e.screenY - prev.lastPos.y;
+          delta.x = e.nativeEvent.screenX - prev.lastPos.x;
+          delta.y = e.nativeEvent.screenY - prev.lastPos.y;
           const protocolPacket = getMouseMoveEventCommand(delta);
           conn.send(protocolPacket);
 
-          prev.lastPos.x = e.screenX;
-          prev.lastPos.y = e.screenY;
+          prev.lastPos.x = e.nativeEvent.screenX;
+          prev.lastPos.y = e.nativeEvent.screenY;
         }}
         style={{
           backgroundColor: Colors.dark.background,
           flex: 1,
           borderRadius: 20,
-          overscrollBehavior: "none",
-          touchAction: "none",
         }}
       ></View>
     </View>
