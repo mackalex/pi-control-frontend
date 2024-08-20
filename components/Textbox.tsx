@@ -17,25 +17,23 @@ function getCodeForEvent(e: NativeSyntheticEvent<TextInputKeyPressEventData>): n
 }
 
 export function TextBox({ conn }: PiConnectionProps) {
-  let [text, setText] = useState("");
-
   return (
     <View>
       <ThemedText type="subtitle">Ask, and your Pi shall receive:</ThemedText>
         <GestureHandlerRootView style={{flex: 1, flexDirection: "row"}}>
           <TextInput
+            maxLength={0}
             style={{
               marginTop: 20,
               borderColor: "black",
               borderWidth: 2,
               flexGrow: 1
             }}
-            value={text}
+            autoCapitalize="none"
             placeholder="Send text to your Raspberry Pi!"
             onKeyPress={(e) => {
               const protocolPacket = getTextEventCommand(getCodeForEvent(e));
               conn.send(protocolPacket);
-              setText("");
             }}
           />
         </GestureHandlerRootView>
