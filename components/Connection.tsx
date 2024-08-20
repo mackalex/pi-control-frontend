@@ -2,7 +2,7 @@ import { Pressable, View } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
+import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";
 
 const DEFAULT_PORT = 14741;
 
@@ -42,14 +42,9 @@ type ErrorProps = {
   error: string;
 };
 function ErrorComponent({ error }: ErrorProps) {
-  if (!error) {
-    return null;
-  }
-  return (
-    <ThemedText style={{ color: "red" }}>
-      <b>Error:</b> {error}
-    </ThemedText>
-  );
+  return error ?
+      <ThemedText style={{ color: "red", fontWeight: 700}}>Error: {error}</ThemedText>
+  : null
 }
 
 export function Connection({ conn, setConn }: ConnectionComponentProps) {
@@ -153,22 +148,24 @@ export function Connection({ conn, setConn }: ConnectionComponentProps) {
           marginBottom: 10,
         }}
       >
-        <TextInput
-          style={[{ flex: 3 }, styles.inputBox]}
-          placeholder="IP"
-          inputMode="url"
-          readOnly={!!conn}
-          value={ip}
-          onChangeText={(text) => setIp(text)}
-        />
-        <TextInput
-          style={[{ flex: 1 }, styles.inputBox]}
-          value={port}
-          inputMode="numeric"
-          readOnly={!!conn}
-          placeholder="Port"
-          onChangeText={(text) => setPort(text)}
-        />
+        <GestureHandlerRootView style={{flex: 1, flexDirection: "row"}}>
+          <TextInput
+            style={[{ flex: 3 }, styles.inputBox]}
+            placeholder="IP"
+            inputMode="url"
+            readOnly={!!conn}
+            value={ip}
+            onChangeText={(text) => setIp(text)}
+          />
+          <TextInput
+            style={[{ flex: 1 }, styles.inputBox]}
+            value={port}
+            inputMode="numeric"
+            readOnly={!!conn}
+            placeholder="Port"
+            onChangeText={(text) => setPort(text)}
+          />
+        </GestureHandlerRootView>
       </View>
       <View>{!!conn ? <DisconnectButton /> : <ConnectButton />}</View>
     </View>
@@ -179,9 +176,11 @@ const styles = StyleSheet.create({
   inputBox: {
     borderColor: "black",
     borderWidth: 2,
+    padding: 4
   },
   connectButton: {
-    borderRadius: 7,
+    padding: 8,
+    borderRadius: 8,
     alignItems: "center",
   },
   connectButtonText: {
