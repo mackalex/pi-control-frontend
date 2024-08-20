@@ -29,7 +29,8 @@ type RawMouseCoord = {
 type PreviousPointerEvent = {
   pressId: number;
   panId: string;
-  lastPos: RawMouseCoord;
+  lastTapPos: RawMouseCoord;
+  lastPanPos: RawMouseCoord;
   lastMouseDown: number // Unix millis
 };
 
@@ -39,7 +40,11 @@ export function MousePad({ conn }: PiConnectionProps) {
   let prev: PreviousPointerEvent = {
     pressId: -1,
     panId: "",
-    lastPos: {
+    lastTapPos: {
+      x: -1,
+      y: -1,
+    },
+    lastPanPos: {
       x: -1,
       y: -1,
     },
@@ -64,6 +69,8 @@ export function MousePad({ conn }: PiConnectionProps) {
         // The gesture has started. Show visual feedback so the user knows
         // what is happening!
         // gestureState.d{x,y} will be set to zero now
+        prev.lastPanPos.x = e.nativeEvent.locationX;
+        prev.lastPanPos.y = e.nativeEvent.locationY;
         prev.panId = e.nativeEvent.identifier;
       },
       onPanResponderMove: (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
@@ -73,19 +80,22 @@ export function MousePad({ conn }: PiConnectionProps) {
         if (e.nativeEvent.identifier !== prev.panId) {
           return;
         }
-        delta.x = e.nativeEvent.locationX - prev.lastPos.x;
-        delta.y = e.nativeEvent.locationY - prev.lastPos.y;
+        delta.x = e.nativeEvent.locationX - prev.lastPanPos.x;
+        delta.y = e.nativeEvent.locationY - prev.lastPanPos.y;
         const protocolPacket = getMouseMoveEventCommand(delta);
         conn.send(protocolPacket);
 
-        prev.lastPos.x = e.nativeEvent.locationX;
-        prev.lastPos.y = e.nativeEvent.locationY;
+        prev.lastPanPos.x = e.nativeEvent.locationX;
+        prev.lastPanPos.y = e.nativeEvent.locationY;
       },
       onPanResponderTerminationRequest: (evt, gestureState) =>
         true,
       onPanResponderRelease: (evt, gestureState) => {
         // The user has released all touches while this view is the
         // responder. This typically means a gesture has succeeded
+        prev.lastPanPos.x = -1;
+        prev.lastPanPos.y = -1;
+        prev.panId = "";
       },
     }),
   ).current;
@@ -95,8 +105,8 @@ export function MousePad({ conn }: PiConnectionProps) {
       <Pressable
         onPressIn={(e: PressableEvent) => {
           prev.pressId = e.nativeEvent.identifier;
-          prev.lastPos.x = e.nativeEvent.locationX;
-          prev.lastPos.y = e.nativeEvent.locationY;
+          prev.lastTapPos.x = e.nativeEvent.locationX;
+          prev.lastTapPos.y = e.nativeEvent.locationY;
           if (e.nativeEvent.touches.length != 1) {
             // Work on double fingered taps etc. later
             return;
