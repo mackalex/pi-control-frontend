@@ -10,6 +10,7 @@ import {
 } from "@/hooks/protocolBuffer";
 import { PiConnectionProps } from "./Connection";
 import { PointerEvent } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const browser_to_pictrl_clicks = new Map<
   BROWSER_MOUSE_BUTTON,
@@ -47,14 +48,7 @@ export function MousePad({ conn }: PiConnectionProps) {
     y: 0,
   };
   return (
-    <View
-      style={{
-        flexDirection: "column",
-        flex: 1,
-        padding: 10,
-        paddingTop: 30,
-      }}
-    >
+    <GestureHandlerRootView style={{flex: 1, flexDirection: "column", padding: 10, paddingTop: 30}}>
       <View
         onPointerDown={(e: PointerEvent) => {
           prev.id = e.nativeEvent.pointerId;
@@ -109,6 +103,6 @@ export function MousePad({ conn }: PiConnectionProps) {
           borderRadius: 20,
         }}
       ></View>
-    </View>
+    </GestureHandlerRootView>
   );
 }
