@@ -2,8 +2,7 @@ import { NativeSyntheticEvent, TextInputKeyPressEventData, View } from "react-na
 import { ThemedText } from "./ThemedText";
 import { getTextEventCommand } from "@/hooks/protocolBuffer";
 import { PiConnectionProps } from "./Connection";
-import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";
-import { useState } from "react";
+import { TextInput } from "react-native-gesture-handler";
 
 
 function getCodeForEvent(e: NativeSyntheticEvent<TextInputKeyPressEventData>): number {
@@ -20,7 +19,7 @@ export function TextBox({ conn }: PiConnectionProps) {
   return (
     <View>
       <ThemedText type="subtitle">Ask, and your Pi shall receive:</ThemedText>
-        <GestureHandlerRootView style={{flex: 1, flexDirection: "row"}}>
+        <View style={{flex: 1, flexDirection: "row"}}>
           <TextInput
             maxLength={0}
             multiline={true}
@@ -37,7 +36,7 @@ export function TextBox({ conn }: PiConnectionProps) {
               conn.send(protocolPacket);
             }}
           />
-        </GestureHandlerRootView>
+        </View>
     </View>
   );
 }

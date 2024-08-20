@@ -7,6 +7,7 @@ import { TextBox } from "@/components/Textbox";
 import { Colors } from "@/constants/Colors";
 import { Connection, WebSocketConnProps } from "@/components/Connection";
 import React, { useState } from "react";
+import { GestureHandlerRootView, ScrollView } from "react-native-gesture-handler";
 
 function Controls({ conn }: WebSocketConnProps) {
   if (conn == null) {
@@ -26,29 +27,31 @@ export default function Index() {
   let [conn, setConn] = useState<WebSocket | null>(null);
 
   return (
-    <View
-      style={{
-        height: "100%",
-        backgroundColor: Colors.light.background,
-      }}
-    >
-      <ThemedView style={styles.titleContainer}>
-        <Image
-          source={require("@/assets/images/brands/raspberry-pi.svg")}
-          resizeMode="contain"
-          style={{
-            height: 100,
-            width: 100,
-            marginTop: 20,
-          }}
-        />
-        <ThemedText type="title">PiControl</ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.connectionContainer}>
-        <Connection conn={conn} setConn={setConn} />
-      </ThemedView>
-      <Controls conn={conn} />
-    </View>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <ScrollView
+        style={{
+          height: "100%",
+          backgroundColor: Colors.light.background,
+        }}
+      >
+        <ThemedView style={styles.titleContainer}>
+          <Image
+            source={require("@/assets/images/brands/raspberry-pi.svg")}
+            resizeMode="contain"
+            style={{
+              height: 100,
+              width: 100,
+              marginTop: 20,
+            }}
+          />
+          <ThemedText type="title">PiControl</ThemedText>
+        </ThemedView>
+        <ThemedView style={styles.connectionContainer}>
+          <Connection conn={conn} setConn={setConn} />
+        </ThemedView>
+        <Controls conn={conn} />
+      </ScrollView>
+    </GestureHandlerRootView>
   );
 }
 
