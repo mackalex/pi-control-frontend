@@ -2,7 +2,7 @@ import { Pressable, View } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { useState, useEffect } from "react";
 import { StyleSheet } from "react-native";
-import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";
+import { TextInput } from "react-native-gesture-handler";
 
 const DEFAULT_PORT = 14741;
 
@@ -148,7 +148,7 @@ export function Connection({ conn, setConn }: ConnectionComponentProps) {
           marginBottom: 10,
         }}
       >
-        <GestureHandlerRootView style={{flex: 1, flexDirection: "row"}}>
+        <View style={{flex: 1, flexDirection: "row"}}>
           <TextInput
             style={[{ flex: 3 }, styles.inputBox]}
             placeholder="IP"
@@ -169,7 +169,7 @@ export function Connection({ conn, setConn }: ConnectionComponentProps) {
             onSubmitEditing={() => connect(ip, port)}
             blurOnSubmit={true}
           />
-        </GestureHandlerRootView>
+        </View>
       </View>
       <View>{!!conn ? <DisconnectButton /> : <ConnectButton />}</View>
     </View>

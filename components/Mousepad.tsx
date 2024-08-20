@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/Colors";
-import { GestureResponderEvent, PanResponder, PanResponderGestureState } from "react-native";
+import { GestureResponderEvent, PanResponder, PanResponderGestureState, View } from "react-native";
 import {
   RelMouseMove,
   getMouseClickEventCommand,
@@ -9,7 +9,7 @@ import {
   PICTRL_MOUSE_CLICK,
 } from "@/hooks/protocolBuffer";
 import { PiConnectionProps } from "./Connection";
-import { GestureHandlerRootView, Pressable } from "react-native-gesture-handler";
+import { Pressable } from "react-native-gesture-handler";
 import { PressableEvent } from "react-native-gesture-handler/lib/typescript/components/Pressable/PressableProps";
 import React from "react";
 
@@ -101,7 +101,7 @@ export function MousePad({ conn }: PiConnectionProps) {
   ).current;
 
   return (
-    <GestureHandlerRootView style={{flex: 1, flexDirection: "column", padding: 10, paddingTop: 30}} {...panResponder.panHandlers}>
+    <View style={{flex: 1, flexDirection: "column", padding: 10, paddingTop: 30}} {...panResponder.panHandlers}>
       <Pressable
         onPressIn={(e: PressableEvent) => {
           prev.pressId = e.nativeEvent.identifier;
@@ -144,6 +144,6 @@ export function MousePad({ conn }: PiConnectionProps) {
           borderRadius: 20,
         }}
       ></Pressable>
-    </GestureHandlerRootView>
+    </View>
   );
 }
