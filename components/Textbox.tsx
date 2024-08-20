@@ -23,6 +23,7 @@ export function TextBox({ conn }: PiConnectionProps) {
         <GestureHandlerRootView style={{flex: 1, flexDirection: "row"}}>
           <TextInput
             maxLength={0}
+            multiline={true}
             style={{
               marginTop: 20,
               borderColor: "black",
