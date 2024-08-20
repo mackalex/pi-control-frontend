@@ -1,39 +1,41 @@
-import { View } from "react-native";
+import { NativeSyntheticEvent, TextInputKeyPressEventData, View } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { getTextEventCommand } from "@/hooks/protocolBuffer";
 import { PiConnectionProps } from "./Connection";
+import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";
+import { useState } from "react";
 
 
-function getCodeForEvent(e: React.KeyboardEvent): number {
-  switch (e.key) {
+function getCodeForEvent(e: NativeSyntheticEvent<TextInputKeyPressEventData>): number {
+  switch (e.nativeEvent.key) {
     case "Enter":
       return 10; // ASCII LF
     case "Backspace":
       return 127; // ASCII DEL
   };
-  return e.key.charCodeAt(0);
+  return e.nativeEvent.key.charCodeAt(0);
 }
 
 export function TextBox({ conn }: PiConnectionProps) {
+  let [text, setText] = useState("");
+
   return (
     <View>
       <ThemedText type="subtitle">Ask, and your Pi shall receive:</ThemedText>
-      <textarea
-        rows={1}
-        cols={40}
-        style={{
-          marginTop: 20,
-          resize: "none",
-        }}
-        placeholder="Send text to your Raspberry Pi!"
-        onChange={(e) => {
-          e.target.value = "";
-        }}
-        onKeyDown={(e) => {
-          const protocolPacket = getTextEventCommand(getCodeForEvent(e));
-          conn.send(protocolPacket);
-        }}
-      />
+        <GestureHandlerRootView style={{flex: 1, flexDirection: "row"}}>
+          <TextInput
+            style={{
+              marginTop: 20,
+            }}
+            value={text}
+            placeholder="Send text to your Raspberry Pi!"
+            onKeyPress={(e) => {
+              const protocolPacket = getTextEventCommand(getCodeForEvent(e));
+              conn.send(protocolPacket);
+              setText("");
+            }}
+          />
+        </GestureHandlerRootView>
     </View>
   );
 }
