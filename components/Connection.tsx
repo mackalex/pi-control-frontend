@@ -43,7 +43,7 @@ type ErrorProps = {
 };
 function ErrorComponent({ error }: ErrorProps) {
   return error ?
-      <ThemedText style={{ color: "red", fontWeight: 700}}>Error: {error}</ThemedText>
+      <ThemedText style={{ color: "red", fontWeight: "bold"}}>Error: {error}</ThemedText>
   : null
 }
 
