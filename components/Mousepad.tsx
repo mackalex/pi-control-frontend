@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/Colors";
-import { View } from "react-native";
+import { GestureResponderEvent } from "react-native";
 import {
   RelMouseMove,
   getMouseClickEventCommand,
@@ -9,8 +9,8 @@ import {
   PICTRL_MOUSE_CLICK,
 } from "@/hooks/protocolBuffer";
 import { PiConnectionProps } from "./Connection";
-import { PointerEvent } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { GestureHandlerRootView, Pressable } from "react-native-gesture-handler";
+import { PressableEvent } from "react-native-gesture-handler/lib/typescript/components/Pressable/PressableProps";
 
 const browser_to_pictrl_clicks = new Map<
   BROWSER_MOUSE_BUTTON,
@@ -49,34 +49,35 @@ export function MousePad({ conn }: PiConnectionProps) {
   };
   return (
     <GestureHandlerRootView style={{flex: 1, flexDirection: "column", padding: 10, paddingTop: 30}}>
-      <View
-        onPointerDown={(e: PointerEvent) => {
-          prev.id = e.nativeEvent.pointerId;
-          prev.lastPos.x = e.nativeEvent.screenX;
-          prev.lastPos.y = e.nativeEvent.screenY;
-          let button = e.nativeEvent.button as BROWSER_MOUSE_BUTTON;
-          if (!browser_to_pictrl_clicks.has(button)) {
+      <Pressable
+        onStartShouldSetResponder={() => true}
+        onPressIn={(e: PressableEvent) => {
+          prev.id = e.nativeEvent.identifier;
+          prev.lastPos.x = e.nativeEvent.locationX;
+          prev.lastPos.y = e.nativeEvent.locationY;
+          if (e.nativeEvent.touches.length != 1) {
+            // Work on double fingered taps etc. later
             return;
           }
           prev.lastMouseDown = Date.now();
         }}
-        onPointerUp={(e: PointerEvent) => {
-          if (e.nativeEvent.pointerId !== prev.id) {
+        onPressOut={(e: PressableEvent) => {
+          if (e.nativeEvent.identifier !== prev.id) {
             return;
           }
 
-          let button = e.nativeEvent.button as BROWSER_MOUSE_BUTTON;
-          if (!browser_to_pictrl_clicks.has(button)) {
+          if (e.nativeEvent.touches.length != 1) {
+            // Work on double fingered taps etc. later
             return;
           }
 
           if (Date.now() - prev.lastMouseDown < MOUSE_DELAY_FOR_CLICK) {
             const mouseDownPacket = getMouseClickEventCommand(
-              browser_to_pictrl_clicks.get(button)!,
+              browser_to_pictrl_clicks.get(BROWSER_MOUSE_BUTTON.MAIN)!,
               PICTRL_MOUSE_CLICK.DOWN,
             );
             const mouseUpPacket = getMouseClickEventCommand(
-              browser_to_pictrl_clicks.get(button)!,
+              browser_to_pictrl_clicks.get(BROWSER_MOUSE_BUTTON.MAIN)!,
               PICTRL_MOUSE_CLICK.UP,
             );
             conn.send(mouseDownPacket);
@@ -85,24 +86,25 @@ export function MousePad({ conn }: PiConnectionProps) {
 
           prev.id = -1;
         }}
-        onPointerMove={(e: PointerEvent) => {
-          if (e.nativeEvent.pointerId !== prev.id) {
+        onResponderMove={(e: GestureResponderEvent) => {
+          console.log(e);
+          if (parseInt(e.nativeEvent.identifier) !== prev.id) {
             return;
           }
-          delta.x = e.nativeEvent.screenX - prev.lastPos.x;
-          delta.y = e.nativeEvent.screenY - prev.lastPos.y;
+          delta.x = e.nativeEvent.locationX - prev.lastPos.x;
+          delta.y = e.nativeEvent.locationY - prev.lastPos.y;
           const protocolPacket = getMouseMoveEventCommand(delta);
           conn.send(protocolPacket);
 
-          prev.lastPos.x = e.nativeEvent.screenX;
-          prev.lastPos.y = e.nativeEvent.screenY;
+          prev.lastPos.x = e.nativeEvent.locationX;
+          prev.lastPos.y = e.nativeEvent.locationY;
         }}
         style={{
           backgroundColor: Colors.dark.background,
           flex: 1,
           borderRadius: 20,
         }}
-      ></View>
+      ></Pressable>
     </GestureHandlerRootView>
   );
 }
