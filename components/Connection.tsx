@@ -156,6 +156,8 @@ export function Connection({ conn, setConn }: ConnectionComponentProps) {
             readOnly={!!conn}
             value={ip}
             onChangeText={(text) => setIp(text)}
+            onSubmitEditing={() => connect(ip, port)}
+            blurOnSubmit={true}
           />
           <TextInput
             style={[{ flex: 1 }, styles.inputBox]}
@@ -164,6 +166,8 @@ export function Connection({ conn, setConn }: ConnectionComponentProps) {
             readOnly={!!conn}
             placeholder="Port"
             onChangeText={(text) => setPort(text)}
+            onSubmitEditing={() => connect(ip, port)}
+            blurOnSubmit={true}
           />
         </GestureHandlerRootView>
       </View>
