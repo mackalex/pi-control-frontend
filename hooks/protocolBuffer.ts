@@ -43,14 +43,15 @@ export function getMouseClickEventCommand(
   return new Uint8Array([PICTRL_COMMAND.MOUSE_CLICK, 1, byte]);
 }
 
+const mouseMoveHeader = new Uint8Array([PICTRL_COMMAND.MOUSE_MV, 2]);
+const mouseMoveHeaderLen = mouseMoveHeader.length;
 export function getMouseMoveEventCommand(delta: RelMouseMove) {
-  const header = new Uint8Array([PICTRL_COMMAND.MOUSE_MV, 2]);
 
   const deltaBytesSig = new Int8Array([delta.x, delta.y]);
   const deltaBytesUnsig = new Uint8Array(deltaBytesSig.buffer);
 
-  let ret = new Uint8Array(header.length + deltaBytesUnsig.length);
-  ret.set(header);
-  ret.set(deltaBytesUnsig, header.length);
+  let ret = new Uint8Array(mouseMoveHeaderLen + deltaBytesUnsig.length);
+  ret.set(mouseMoveHeader);
+  ret.set(deltaBytesUnsig, mouseMoveHeaderLen);
   return ret;
 }
