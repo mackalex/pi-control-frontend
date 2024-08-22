@@ -77,7 +77,7 @@ export function MousePad({ conn }: PiConnectionProps) {
         prev.lastPanPos.x = e.nativeEvent.locationX;
         prev.lastPanPos.y = e.nativeEvent.locationY;
         prev.panId = e.nativeEvent.identifier;
-        prev.lastMouseDown = Date.now();
+        prev.lastMouseDown = e.nativeEvent.timestamp;
       },
       onPanResponderMove: (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
         // The most recent move distance is gestureState.move{X,Y}
@@ -108,7 +108,7 @@ export function MousePad({ conn }: PiConnectionProps) {
           return;
         }
 
-        if (Date.now() - prev.lastMouseDown < MOUSE_DELAY_FOR_CLICK) {
+        if (e.nativeEvent.timestamp - prev.lastMouseDown < MOUSE_DELAY_FOR_CLICK) {
           conn.send(MOUSE_DOWN_PACKET);
           conn.send(MOUSE_UP_PACKET);
         }
