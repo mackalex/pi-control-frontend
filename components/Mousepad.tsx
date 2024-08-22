@@ -22,10 +22,12 @@ const browser_to_pictrl_clicks = new Map<
 
 type PreviousPointerEvent = {
   panId: string;
-  lastMouseDown: number // Unix millis
+  lastMouseDown: number; // Unix millis
+  lastMouseUp: number; // Unix millis
+  doubleTapped: boolean;
 };
 
-const MOUSE_DELAY_FOR_CLICK = 200; // ms
+const MOUSE_DELAY_FOR_CLICK = 100; // ms
 const MOUSE_DOWN_PACKET = getMouseClickEventCommand(
   browser_to_pictrl_clicks.get(BROWSER_MOUSE_BUTTON.MAIN)!,
   PICTRL_MOUSE_CLICK.DOWN,
@@ -38,7 +40,9 @@ const MOUSE_UP_PACKET = getMouseClickEventCommand(
 export function MousePad({ conn }: PiConnectionProps) {
   let prev: PreviousPointerEvent = {
     panId: "",
-    lastMouseDown: 0
+    lastMouseDown: 0,
+    lastMouseUp: 0,
+    doubleTapped: false
   };
 
   let delta: RelMouseMove = {
@@ -64,6 +68,11 @@ export function MousePad({ conn }: PiConnectionProps) {
           return;
         }
 
+        // User double tapped
+        if (e.nativeEvent.timestamp - prev.lastMouseUp < MOUSE_DELAY_FOR_CLICK) {
+          prev.doubleTapped = true;
+          conn.send(MOUSE_DOWN_PACKET);
+        }
         delta.x = 0;
         delta.y = 0;
         prev.panId = e.nativeEvent.identifier;
@@ -97,12 +106,18 @@ export function MousePad({ conn }: PiConnectionProps) {
           return;
         }
 
-        if (e.nativeEvent.timestamp - prev.lastMouseDown < MOUSE_DELAY_FOR_CLICK) {
+        if (!prev.doubleTapped && e.nativeEvent.timestamp - prev.lastMouseDown < MOUSE_DELAY_FOR_CLICK) {
+          // User tapped once
           conn.send(MOUSE_DOWN_PACKET);
           conn.send(MOUSE_UP_PACKET);
+        } else if (prev.doubleTapped) {
+          // Otherwise, just send mouse up if user double tapped
+          conn.send(MOUSE_UP_PACKET);
+          prev.doubleTapped = false;
         }
 
         prev.panId = "";
+        prev.lastMouseUp = e.nativeEvent.timestamp;
       },
     }),
   ).current;
