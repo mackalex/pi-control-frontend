@@ -35,6 +35,14 @@ type PreviousPointerEvent = {
 };
 
 const MOUSE_DELAY_FOR_CLICK = 200; // ms
+const MOUSE_DOWN_PACKET = getMouseClickEventCommand(
+  browser_to_pictrl_clicks.get(BROWSER_MOUSE_BUTTON.MAIN)!,
+  PICTRL_MOUSE_CLICK.DOWN,
+);
+const MOUSE_UP_PACKET = getMouseClickEventCommand(
+  browser_to_pictrl_clicks.get(BROWSER_MOUSE_BUTTON.MAIN)!,
+  PICTRL_MOUSE_CLICK.UP,
+);
 
 export function MousePad({ conn }: PiConnectionProps) {
   let prev: PreviousPointerEvent = {
@@ -124,16 +132,8 @@ export function MousePad({ conn }: PiConnectionProps) {
           }
 
           if (Date.now() - prev.lastMouseDown < MOUSE_DELAY_FOR_CLICK) {
-            const mouseDownPacket = getMouseClickEventCommand(
-              browser_to_pictrl_clicks.get(BROWSER_MOUSE_BUTTON.MAIN)!,
-              PICTRL_MOUSE_CLICK.DOWN,
-            );
-            const mouseUpPacket = getMouseClickEventCommand(
-              browser_to_pictrl_clicks.get(BROWSER_MOUSE_BUTTON.MAIN)!,
-              PICTRL_MOUSE_CLICK.UP,
-            );
-            conn.send(mouseDownPacket);
-            conn.send(mouseUpPacket);
+            conn.send(MOUSE_DOWN_PACKET);
+            conn.send(MOUSE_UP_PACKET);
           }
 
           prev.pressId = -1;
