@@ -10,7 +10,6 @@ import {
 } from "@/hooks/protocolBuffer";
 import { PiConnectionProps } from "./Connection";
 import { Pressable } from "react-native-gesture-handler";
-import { PressableEvent } from "react-native-gesture-handler/lib/typescript/components/Pressable/PressableProps";
 import React from "react";
 
 const browser_to_pictrl_clicks = new Map<
@@ -27,9 +26,7 @@ type RawMouseCoord = {
 };
 
 type PreviousPointerEvent = {
-  pressId: number;
   panId: string;
-  lastTapPos: RawMouseCoord;
   lastPanPos: RawMouseCoord;
   lastMouseDown: number // Unix millis
 };
@@ -46,12 +43,7 @@ const MOUSE_UP_PACKET = getMouseClickEventCommand(
 
 export function MousePad({ conn }: PiConnectionProps) {
   let prev: PreviousPointerEvent = {
-    pressId: -1,
     panId: "",
-    lastTapPos: {
-      x: -1,
-      y: -1,
-    },
     lastPanPos: {
       x: -1,
       y: -1,
@@ -77,9 +69,15 @@ export function MousePad({ conn }: PiConnectionProps) {
         // The gesture has started. Show visual feedback so the user knows
         // what is happening!
         // gestureState.d{x,y} will be set to zero now
+        if (e.nativeEvent.touches.length != 1) {
+          // Work on double fingered taps etc. later
+          return;
+        }
+
         prev.lastPanPos.x = e.nativeEvent.locationX;
         prev.lastPanPos.y = e.nativeEvent.locationY;
         prev.panId = e.nativeEvent.identifier;
+        prev.lastMouseDown = Date.now();
       },
       onPanResponderMove: (e: GestureResponderEvent, gestureState: PanResponderGestureState) => {
         // The most recent move distance is gestureState.move{X,Y}
@@ -98,9 +96,23 @@ export function MousePad({ conn }: PiConnectionProps) {
       },
       onPanResponderTerminationRequest: (evt, gestureState) =>
         true,
-      onPanResponderRelease: (evt, gestureState) => {
+      onPanResponderRelease: (e, gestureState) => {
         // The user has released all touches while this view is the
         // responder. This typically means a gesture has succeeded
+        if (e.nativeEvent.identifier !== prev.panId) {
+          return;
+        }
+
+        if (e.nativeEvent.touches.length != 0) {
+          // Work on double fingered taps etc. later
+          return;
+        }
+
+        if (Date.now() - prev.lastMouseDown < MOUSE_DELAY_FOR_CLICK) {
+          conn.send(MOUSE_DOWN_PACKET);
+          conn.send(MOUSE_UP_PACKET);
+        }
+
         prev.lastPanPos.x = -1;
         prev.lastPanPos.y = -1;
         prev.panId = "";
@@ -111,33 +123,6 @@ export function MousePad({ conn }: PiConnectionProps) {
   return (
     <View style={{flex: 1, flexDirection: "column", padding: 10, paddingTop: 30}} {...panResponder.panHandlers}>
       <Pressable
-        onPressIn={(e: PressableEvent) => {
-          prev.pressId = e.nativeEvent.identifier;
-          prev.lastTapPos.x = e.nativeEvent.locationX;
-          prev.lastTapPos.y = e.nativeEvent.locationY;
-          if (e.nativeEvent.touches.length != 1) {
-            // Work on double fingered taps etc. later
-            return;
-          }
-          prev.lastMouseDown = Date.now();
-        }}
-        onPressOut={(e: PressableEvent) => {
-          if (e.nativeEvent.identifier !== prev.pressId) {
-            return;
-          }
-
-          if (e.nativeEvent.touches.length != 1) {
-            // Work on double fingered taps etc. later
-            return;
-          }
-
-          if (Date.now() - prev.lastMouseDown < MOUSE_DELAY_FOR_CLICK) {
-            conn.send(MOUSE_DOWN_PACKET);
-            conn.send(MOUSE_UP_PACKET);
-          }
-
-          prev.pressId = -1;
-        }}
         style={{
           backgroundColor: Colors.dark.background,
           flex: 1,
