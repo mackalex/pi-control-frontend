@@ -28,29 +28,38 @@ export default function Index() {
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <ScrollView
+      <View
         style={{
-          height: "100%",
-          backgroundColor: Colors.light.background,
+          flex: 1
         }}
       >
-        <ThemedView style={styles.titleContainer}>
-          <Image
-            source={require("@/assets/images/brands/raspberry-pi.svg")}
-            resizeMode="contain"
-            style={{
-              height: 100,
-              width: 100,
-              marginTop: 20,
-            }}
-          />
-          <ThemedText type="title">PiControl</ThemedText>
-        </ThemedView>
-        <ThemedView style={styles.connectionContainer}>
-          <Connection conn={conn} setConn={setConn} />
-        </ThemedView>
-        <Controls conn={conn} />
-      </ScrollView>
+        <ScrollView
+          style={{
+            flex: 1
+          }}
+          contentContainerStyle={{
+            flexGrow: 1,
+            backgroundColor: Colors.light.background,
+          }}
+        >
+          <ThemedView style={styles.titleContainer}>
+            <Image
+              source={require("@/assets/images/brands/raspberry-pi.svg")}
+              resizeMode="contain"
+              style={{
+                height: 100,
+                width: 100,
+                marginTop: 20,
+              }}
+            />
+            <ThemedText type="title">PiControl</ThemedText>
+          </ThemedView>
+          <ThemedView style={styles.connectionContainer}>
+            <Connection conn={conn} setConn={setConn} />
+          </ThemedView>
+          <Controls conn={conn} />
+        </ScrollView>
+      </View>
     </GestureHandlerRootView>
   );
 }
