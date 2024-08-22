@@ -5,6 +5,8 @@ import { PiConnectionProps } from "./Connection";
 import { TextInput } from "react-native-gesture-handler";
 
 
+const SEND_ENTER_PROTOCOL_PACKET = getTextEventCommand('\n'.charCodeAt(0));
+
 function getCodeForEvent(e: NativeSyntheticEvent<TextInputKeyPressEventData>): number {
   switch (e.nativeEvent.key) {
     case "Enter":
@@ -22,12 +24,14 @@ export function TextBox({ conn }: PiConnectionProps) {
         <View style={{flex: 1, flexDirection: "row"}}>
           <TextInput
             maxLength={0}
-            multiline={true}
+            multiline={false}
+            returnKeyType="send"
             style={{
               marginTop: 20,
               borderColor: "black",
               borderWidth: 2,
-              flexGrow: 1
+              flexGrow: 1,
+              padding: 10
             }}
             autoCapitalize="none"
             placeholder="Send text to your Raspberry Pi!"
@@ -35,6 +39,10 @@ export function TextBox({ conn }: PiConnectionProps) {
               const protocolPacket = getTextEventCommand(getCodeForEvent(e));
               conn.send(protocolPacket);
             }}
+            onSubmitEditing={(e) => {
+              conn.send(SEND_ENTER_PROTOCOL_PACKET);
+            }}
+            blurOnSubmit={false}
           />
         </View>
     </View>
