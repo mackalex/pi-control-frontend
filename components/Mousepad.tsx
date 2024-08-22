@@ -20,14 +20,8 @@ const browser_to_pictrl_clicks = new Map<
   [BROWSER_MOUSE_BUTTON.SEC, PICTRL_MOUSE_BUTTON.RIGHT],
 ]);
 
-type RawMouseCoord = {
-  x: number;
-  y: number;
-};
-
 type PreviousPointerEvent = {
   panId: string;
-  lastPanPos: RawMouseCoord;
   lastMouseDown: number // Unix millis
 };
 
@@ -44,10 +38,6 @@ const MOUSE_UP_PACKET = getMouseClickEventCommand(
 export function MousePad({ conn }: PiConnectionProps) {
   let prev: PreviousPointerEvent = {
     panId: "",
-    lastPanPos: {
-      x: -1,
-      y: -1,
-    },
     lastMouseDown: 0
   };
 
@@ -74,8 +64,8 @@ export function MousePad({ conn }: PiConnectionProps) {
           return;
         }
 
-        prev.lastPanPos.x = e.nativeEvent.locationX;
-        prev.lastPanPos.y = e.nativeEvent.locationY;
+        delta.x = 0;
+        delta.y = 0;
         prev.panId = e.nativeEvent.identifier;
         prev.lastMouseDown = e.nativeEvent.timestamp;
       },
@@ -86,13 +76,12 @@ export function MousePad({ conn }: PiConnectionProps) {
         if (e.nativeEvent.identifier !== prev.panId) {
           return;
         }
-        delta.x = e.nativeEvent.locationX - prev.lastPanPos.x;
-        delta.y = e.nativeEvent.locationY - prev.lastPanPos.y;
-        const protocolPacket = getMouseMoveEventCommand(delta);
+        const newDelta: RelMouseMove = {x: Math.round(gestureState.dx - delta.x), y: Math.round(gestureState.dy - delta.y)};
+        const protocolPacket = getMouseMoveEventCommand(newDelta);
         conn.send(protocolPacket);
 
-        prev.lastPanPos.x = e.nativeEvent.locationX;
-        prev.lastPanPos.y = e.nativeEvent.locationY;
+        delta.x = gestureState.dx;
+        delta.y = gestureState.dy;
       },
       onPanResponderTerminationRequest: (evt, gestureState) =>
         true,
@@ -113,8 +102,6 @@ export function MousePad({ conn }: PiConnectionProps) {
           conn.send(MOUSE_UP_PACKET);
         }
 
-        prev.lastPanPos.x = -1;
-        prev.lastPanPos.y = -1;
         prev.panId = "";
       },
     }),
