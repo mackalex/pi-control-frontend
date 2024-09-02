@@ -69,6 +69,7 @@ export function Connection({ conn, setConn }: ConnectionComponentProps) {
           console.log("WebSocket closed by user.");
           break;
         default:
+          setErr(ev.reason);
           break;
       }
     };
